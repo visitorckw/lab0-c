@@ -301,7 +301,19 @@ void q_sort(struct list_head *head)
 int q_descend(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
-    return 0;
+    char str[50000] = "";  // unsafe for possible larger length
+    struct list_head *next;
+    for (struct list_head *cur = head->prev; cur != head; cur = next) {
+        next = cur->prev;
+        element_t *node = list_entry(cur, element_t, list);
+        if (strcmp(node->value, str) < 0) {
+            list_del(cur);
+            free(node->value);
+            free(node);
+        } else
+            strlcpy(str, node->value, 50000);
+    }
+    return q_size(head);
 }
 
 /* Merge all the queues into one sorted queue, which is in ascending order */
