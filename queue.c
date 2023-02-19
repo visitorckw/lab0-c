@@ -4,6 +4,14 @@
 
 #include "queue.h"
 
+/* The strcpy built-in function does not check buffer lengths
+ * and may very well overwrite memory zone contiguous to the intended
+ * destination.
+ */
+#ifndef strlcpy
+#define strlcpy(dst, src, sz) snprintf((dst), (sz), "%s", (src))
+#endif
+
 /* Notice: sometimes, Cppcheck would find the potential NULL pointer bugs,
  * but some of them cannot occur. You can suppress them by adding the
  * following line.
@@ -36,12 +44,36 @@ void q_free(struct list_head *l)
 /* Insert an element at head of queue */
 bool q_insert_head(struct list_head *head, char *s)
 {
+    if (!head)
+        return false;
+    element_t *newNode = (element_t *) malloc(sizeof(element_t));
+    if (!newNode)
+        return false;
+    newNode->value = (char *) malloc(sizeof(char) * (strlen(s) + 1));
+    if (!newNode->value) {
+        free(newNode);
+        return false;
+    }
+    strlcpy(newNode->value, s, strlen(s) + 1);
+    list_add(&newNode->list, head);
     return true;
 }
 
 /* Insert an element at tail of queue */
 bool q_insert_tail(struct list_head *head, char *s)
 {
+    if (!head)
+        return false;
+    element_t *newNode = (element_t *) malloc(sizeof(element_t));
+    if (!newNode)
+        return false;
+    newNode->value = (char *) malloc(sizeof(char) * (strlen(s) + 1));
+    if (!newNode->value) {
+        free(newNode);
+        return false;
+    }
+    strlcpy(newNode->value, s, strlen(s) + 1);
+    list_add_tail(&newNode->list, head);
     return true;
 }
 
