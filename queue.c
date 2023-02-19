@@ -269,7 +269,32 @@ struct list_head *mergeTwoLists(struct list_head *L1, struct list_head *L2)
 }
 
 /* Sort elements of queue in ascending order */
-void q_sort(struct list_head *head) {}
+void q_sort(struct list_head *head)
+{
+    if (!head || list_empty(head) || list_is_singular(head))
+        return;
+    struct list_head *slow = head->next;
+    struct list_head *fast = head->next;
+    while (fast->next != head && fast->next->next != head) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    element_t ele;
+    struct list_head *dummy = &(ele.list);
+    struct list_head *mid = slow->next;
+    struct list_head *last = head->prev;
+
+    mid->prev->next = head;
+    head->prev = mid->prev;
+    dummy->next = mid;
+    dummy->prev = last;
+    last->next = dummy;
+    mid->prev = dummy;
+
+    q_sort(head);
+    q_sort(dummy);
+    mergeTwoLists(head, dummy);
+}
 
 /* Remove every node which has a node with a strictly greater value anywhere to
  * the right side of it */
