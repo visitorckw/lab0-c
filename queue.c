@@ -231,6 +231,43 @@ void q_reverseK(struct list_head *head, int k)
     }
 }
 
+/* Merge two sorted lists in ascending order */
+struct list_head *mergeTwoLists(struct list_head *L1, struct list_head *L2)
+{
+    struct list_head **ptr = &L1;
+    struct list_head *ptr1 = L1->next;
+    struct list_head *ptr2 = L2->next;
+    while (ptr1 != L1 && ptr2 != L2) {
+        element_t *node1 = list_entry(ptr1, element_t, list);
+        element_t *node2 = list_entry(ptr2, element_t, list);
+        if (strcmp(node1->value, node2->value) < 0) {
+            (*ptr)->next = ptr1;
+            ptr1->prev = *ptr;
+            ptr1 = ptr1->next;
+        } else {
+            (*ptr)->next = ptr2;
+            ptr2->prev = *ptr;
+            ptr2 = ptr2->next;
+        }
+        ptr = &(*ptr)->next;
+    }
+    while (ptr1 != L1) {
+        (*ptr)->next = ptr1;
+        ptr1->prev = *ptr;
+        ptr1 = ptr1->next;
+        ptr = &(*ptr)->next;
+    }
+    while (ptr2 != L2) {
+        (*ptr)->next = ptr2;
+        ptr2->prev = *ptr;
+        ptr2 = ptr2->next;
+        ptr = &(*ptr)->next;
+    }
+    (*ptr)->next = L1;
+    L1->prev = *ptr;
+    return L1;
+}
+
 /* Sort elements of queue in ascending order */
 void q_sort(struct list_head *head) {}
 
