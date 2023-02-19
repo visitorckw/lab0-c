@@ -198,7 +198,7 @@ void q_reverse(struct list_head *head)
         cur->prev =
             (struct list_head *) ((long int) cur->prev ^ (long int) cur->next);
         cur = cur->prev;
-    } while ((uintptr_t) cur ^ (uintptr_t) head);
+    } while ((long int) cur ^ (long int) head);
 }
 
 /* Reverse the nodes of the list k at a time */
