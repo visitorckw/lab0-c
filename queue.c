@@ -86,7 +86,9 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
     size_t length = bufsize < strlen(delNode->value) + 1
                         ? bufsize
                         : strlen(delNode->value) + 1;
-    strlcpy(sp, delNode->value, length);
+    if (sp && bufsize)
+        strlcpy(sp, delNode->value, length);
+    strcpy(sp, delNode->value);
     list_del(head->next);
     return delNode;
 }
@@ -100,7 +102,8 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
     size_t length = bufsize < strlen(delNode->value) + 1
                         ? bufsize
                         : strlen(delNode->value) + 1;
-    strlcpy(sp, delNode->value, length);
+    if (sp && bufsize)
+        strlcpy(sp, delNode->value, length);
     list_del(head->prev);
     return delNode;
 }
