@@ -32,6 +32,8 @@ struct list_head *q_new()
 /* Free all storage used by queue */
 void q_free(struct list_head *l)
 {
+    if (!l)
+        return;
     element_t *entry;
     element_t *safe;
     list_for_each_entry_safe (entry, safe, l, list) {
@@ -88,7 +90,6 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
                         : strlen(delNode->value) + 1;
     if (sp && bufsize)
         strlcpy(sp, delNode->value, length);
-    strcpy(sp, delNode->value);
     list_del(head->next);
     return delNode;
 }
