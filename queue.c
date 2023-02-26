@@ -349,3 +349,30 @@ int q_merge(struct list_head *head)
         q_size(list_entry(head->next, queue_contex_t, chain)->q);
     return list_entry(head->next, queue_contex_t, chain)->size;
 }
+
+void q_shuffle(struct list_head *head)
+{
+    if (!head || list_empty(head))
+        return;
+    struct list_head *old;
+    struct list_head *new = head->prev;
+    int len = q_size(head);
+    while (len) {
+        old = head->next;
+        int rnd = rand() % len;
+        for (int i = 0; i < rnd; i++)
+            old = old->next;
+        element_t *entry_old = list_entry(old, element_t, list);
+        element_t *entry_new = list_entry(new, element_t, list);
+        // entry_old->value = (char*)((long long int)(entry_old->value) ^ (long
+        // long int)(entry_new->value)); entry_new->value = (char*)((long long
+        // int)(entry_old->value) ^ (long long int)(entry_new->value));
+        // entry_old->value = (char*)((long long int)(entry_old->value) ^ (long
+        // long int)(entry_new->value));
+        char *tmp = entry_old->value;
+        entry_old->value = entry_new->value;
+        entry_new->value = tmp;
+        new = new->prev;
+        --len;
+    }
+}
