@@ -42,6 +42,7 @@ extern int show_entropy;
  * OK as long as head field of queue_t structure is in first position in
  * solution code
  */
+#include "list_sort.h"
 #include "queue.h"
 #include "shuffle.h"
 
@@ -871,6 +872,27 @@ static bool do_shuffle(int argc, char *argv[])
     return !error_check();
 }
 
+static bool do_list_sort(int argc, char *argv[])
+{
+    if (argc != 1) {
+        report(1, "%s takes no arguments", argv[0]);
+        return false;
+    }
+
+    if (!current || !current->q)
+        report(3, "Warning: Calling list_sort on null queue");
+
+    error_check();
+    set_noallocate_mode(true);
+    if (exception_setup(true))
+        list_sort(NULL, current->q, cmp);
+    exception_cancel();
+
+    set_noallocate_mode(false);
+    q_show(3);
+    return !error_check();
+}
+
 static bool is_circular()
 {
     struct list_head *cur = current->q->next;
@@ -1046,6 +1068,8 @@ static void console_init()
                 "[K]");
     ADD_COMMAND(shuffle,
                 "Shuffle the queue with Fisher–Yates shuffle algorithm", "");
+    ADD_COMMAND(list_sort, "Sort queue in ascending order with kernel sort",
+                "");
     add_param("length", &string_length, "Maximum length of displayed string",
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
